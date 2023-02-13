@@ -3,6 +3,9 @@ import React, { useState } from "react"
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
 } from "firebase/auth"
 
 const Auth = () => {
@@ -11,10 +14,10 @@ const Auth = () => {
   const [newAccount, setNewAccount] = useState(true)
   const [error, setError] = useState("")
 
-  const handleOnChange = (event) => {
+  const handleOnChange = (e) => {
     const {
       target: { name, value },
-    } = event
+    } = e
 
     if (name === "email") {
       setEmail(value)
@@ -23,8 +26,8 @@ const Auth = () => {
     }
   }
 
-  const handleOnSubmit = async (event) => {
-    event.preventDefault()
+  const handleOnSubmit = async (e) => {
+    e.preventDefault()
     try {
       let data
       if (newAccount) {
@@ -42,7 +45,27 @@ const Auth = () => {
     }
   }
 
-  const toggleAccount = () => setNewAccount((prev) => !prev)
+  const toggleAccount = () => {
+    setNewAccount((prev) => !prev)
+  }
+
+  const handleOnSocialClick = async (e) => {
+    const {
+      target: { name },
+    } = e
+
+    let provider
+    try {
+      if (name === "google") {
+        provider = new GoogleAuthProvider()
+      } else if (name === "github") {
+        provider = new GithubAuthProvider()
+      }
+      const data = await signInWithPopup(authService, provider)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div>
@@ -66,10 +89,16 @@ const Auth = () => {
         <input type="submit" value={newAccount ? "Create Account" : "SignIn"} />
         {error}
       </form>
-      <span onClick={toggleAccount}>{newAccount ? "Sign in" : "Create Account"}</span>
+      <span onClick={toggleAccount}>
+        {newAccount ? "Sign in" : "Create Account"}
+      </span>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button name="google" onClick={handleOnSocialClick}>
+          Continue with Google
+        </button>
+        <button name="github" onClick={handleOnSocialClick}>
+          Continue with Github
+        </button>
       </div>
     </div>
   )
