@@ -1,9 +1,24 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { dbService } from "fbase"
-import { addDoc, collection } from "firebase/firestore"
+import { addDoc, collection, getDocs } from "firebase/firestore"
 
 const Home = () => {
   const [lweet, setLweet] = useState("")
+  const [lweets, setLweets] = useState([])
+  useEffect(() => {
+    const getLweets = async () => {
+      const dbLweets = await getDocs(collection(dbService, "lweets"))
+      dbLweets.forEach((document) => {
+        const lweetObject = {
+          ...document.data(), // 모든 document data
+          id: document.id, // id도 줄 것
+        }
+        setLweets((prev) => [lweetObject, ...prev]) // ... = 데이터의 내용물
+      })
+    }
+    getLweets()
+  }, [])
+
   const onSubmit = async (event) => {
     event.preventDefault()
 
@@ -28,6 +43,13 @@ const Home = () => {
         />
         <input type="submit" value="Lweet" />
       </form>
+      <div>
+        {lweets.map(({ id, lweet }) => (
+          <div key={id}>
+            <h4>{lweet}</h4>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
