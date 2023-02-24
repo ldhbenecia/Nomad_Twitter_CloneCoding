@@ -1,30 +1,36 @@
 import React, { useEffect, useState } from "react"
 import { dbService } from "fbase"
-import { addDoc, collection, getDocs } from "firebase/firestore"
+import { addDoc, collection, query, onSnapshot, orderBy } from "firebase/firestore"
 
-const Home = () => {
+const Home = ({ userObj }) => {
+  console.log(userObj)
   const [lweet, setLweet] = useState("")
   const [lweets, setLweets] = useState([])
+
   useEffect(() => {
-    const getLweets = async () => {
-      const dbLweets = await getDocs(collection(dbService, "lweets"))
-      dbLweets.forEach((document) => {
-        const lweetObject = {
-          ...document.data(), // 모든 document data
-          id: document.id, // id도 줄 것
+    // 실시간으로 데이터를 데이터베이스에서 가져오기
+    const q = query(collection(dbService, "lweets"), orderBy("createdAt", "desc"))
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const nextLweets = querySnapshot.docs.map((doc) => {
+        return {
+          id: doc.id,
+          ...doc.data(),
         }
-        setLweets((prev) => [lweetObject, ...prev]) // ... = 데이터의 내용물
       })
+      setLweets(nextLweets)
+    })
+    return () => {
+      unsubscribe()
     }
-    getLweets()
   }, [])
 
   const onSubmit = async (event) => {
     event.preventDefault()
 
     const docRef = await addDoc(collection(dbService, "lweets"), {
-      lweet,
+      text: lweet,
       createdAt: Date.now(),
+      creatorId: userObj.uid, // 이제 누가 lweeet를 만들었는지 알 수 있음
     })
     setLweet("")
   }
@@ -44,9 +50,9 @@ const Home = () => {
         <input type="submit" value="Lweet" />
       </form>
       <div>
-        {lweets.map(({ id, lweet }) => (
+        {lweets.map(({ id, text }) => (
           <div key={id}>
-            <h4>{lweet}</h4>
+            <h4>{text}</h4>
           </div>
         ))}
       </div>
