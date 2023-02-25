@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { dbService } from "fbase"
 import { addDoc, collection, query, onSnapshot, orderBy } from "firebase/firestore"
+import Lweet from "components/Lweet"
 
 const Home = ({ userObj }) => {
-  console.log(userObj)
   const [lweet, setLweet] = useState("")
   const [lweets, setLweets] = useState([])
 
@@ -50,10 +50,12 @@ const Home = ({ userObj }) => {
         <input type="submit" value="Lweet" />
       </form>
       <div>
-        {lweets.map(({ id, text }) => (
-          <div key={id}>
-            <h4>{text}</h4>
-          </div>
+        {lweets.map((lweet) => (
+          <Lweet
+            key={lweet.id}
+            lweetObj={lweet}
+            isOwner={lweet.creatorId === userObj.uid}
+          /> // Lweet component를 prop으로 가져와서 사용
         ))}
       </div>
     </div>
