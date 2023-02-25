@@ -3,8 +3,8 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore"
 import React, { useState } from "react"
 
 const Lweet = ({ lweetObj, isOwner }) => {
-  const [editing, setEditing] = useState(false)
-  const [newLweet, setNewLweet] = useState(lweetObj.text)
+  const [editing, setEditing] = useState(false) // 값을 수정하고 있는지 아닌지 상태 확인
+  const [newLweet, setNewLweet] = useState(lweetObj.text) // input 값 수정 state
   const LweetTextRef = doc(dbService, "lweets", `${lweetObj.id}`) // 리터럴
   const onDeleteClick = async () => {
     const ok = window.confirm("Are you sure you want to delete this lweet?")
