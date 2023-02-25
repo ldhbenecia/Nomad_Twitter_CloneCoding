@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import { dbService } from "fbase"
+import { dbService, storageService } from "fbase"
+import { ref, uploadString } from "firebase/storage"
 import {
   addDoc,
   collection,
@@ -8,6 +9,7 @@ import {
   orderBy,
 } from "firebase/firestore"
 import Lweet from "components/Lweet"
+import { v4 as uuidv4 } from "uuid"
 
 const Home = ({ userObj }) => {
   const [lweet, setLweet] = useState("") // form을 위한 state
@@ -36,13 +38,15 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault()
-
-    const docRef = await addDoc(collection(dbService, "lweets"), {
+    const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`)
+    const response = await uploadString(fileRef, file, "data_url")
+    console.log(response)
+    /* const docRef = await addDoc(collection(dbService, "lweets"), {
       text: lweet,
       createdAt: Date.now(),
       creatorId: userObj.uid, // 이제 누가 lweeet를 만들었는지 알 수 있음
     })
-    setLweet("")
+    setLweet("") */
   }
 
   const onChange = (event) => {
