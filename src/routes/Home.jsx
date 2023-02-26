@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid"
 const Home = ({ userObj }) => {
   const [lweet, setLweet] = useState("") // form을 위한 state
   const [lweets, setLweets] = useState([])
-  const [file, setFile] = useState()
+  const [file, setFile] = useState("")
 
   useEffect(() => {
     // 실시간으로 데이터를 데이터베이스에서 가져오기
