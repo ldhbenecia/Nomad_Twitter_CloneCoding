@@ -39,7 +39,7 @@ const Home = ({ userObj }) => {
   const onSubmit = async (event) => {
     event.preventDefault()
     let fileUrl = "" // 변수 선언
-    if (file != "") {
+    if (file !== "") {
       //프로필사진을 storage에 저장하기 만들어야함
       const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`)
       const response = await uploadString(fileRef, file, "data_url")

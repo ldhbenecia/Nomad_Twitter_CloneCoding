@@ -1,5 +1,6 @@
-import { dbService } from "fbase"
+import { dbService, storageService } from "fbase"
 import { deleteDoc, doc, updateDoc } from "firebase/firestore"
+import { deleteObject, ref } from "firebase/storage"
 import React, { useState } from "react"
 
 const Lweet = ({ lweetObj, isOwner }) => {
@@ -10,7 +11,9 @@ const Lweet = ({ lweetObj, isOwner }) => {
     const ok = window.confirm("Are you sure you want to delete this lweet?")
     if (ok) {
       // delete lweet
-      await deleteDoc(LweetTextRef)
+      await deleteDoc(doc(dbService, "lweets", lweetObj.id)) //firestore에서 lweet 객체 지우기
+      if (lweetObj.fileUrl !== "")
+        await deleteObject(ref(storageService, lweetObj.fileUrl)) //storage에서 첨부파일 지우기
     }
   }
 
