@@ -49,6 +49,9 @@ const Lweet = ({ lweetObj, isOwner }) => {
       ) : (
         <>
           <h4>{lweetObj.text}</h4>
+          {lweetObj.fileUrl && (
+            <img src={lweetObj.fileUrl} width="50px" height="50ox" />
+          )}
           {isOwner && (
             <>
               <button onClick={onDeleteClick}>Delete Lweet</button>

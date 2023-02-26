@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { dbService, storageService } from "fbase"
-import { ref, uploadString } from "firebase/storage"
+import { getDownloadURL, ref, uploadString } from "firebase/storage"
 import {
   addDoc,
   collection,
@@ -38,15 +38,25 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault()
-    const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`)
-    const response = await uploadString(fileRef, file, "data_url")
-    console.log(response)
-    /* const docRef = await addDoc(collection(dbService, "lweets"), {
+    let fileUrl = "" // 변수 선언
+    if (file != "") {
+      //프로필사진을 storage에 저장하기 만들어야함
+      const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`)
+      const response = await uploadString(fileRef, file, "data_url")
+      //storage 참조 경로에 있는 파일의 URL을 다운로드
+      fileUrl = await getDownloadURL(response.ref)
+    }
+    // lweet 오브젝트
+    const lweetObj = {
       text: lweet,
       createdAt: Date.now(),
-      creatorId: userObj.uid, // 이제 누가 lweeet를 만들었는지 알 수 있음
-    })
-    setLweet("") */
+      creatorId: userObj.uid,
+      fileUrl,
+    }
+
+    await addDoc(collection(dbService, "lweets"), lweetObj)
+    setLweet("")
+    setFile("")
   }
 
   const onChange = (event) => {
@@ -82,7 +92,12 @@ const Home = ({ userObj }) => {
           placeholder="What's on your mind?"
           maxLength={120}
         />
-        <input type="file" accept="image/*" onChange={onFileChange} ref={fileInput} />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+          ref={fileInput}
+        />
         <input type="submit" value="Lweet" />
         {file && (
           <div>
