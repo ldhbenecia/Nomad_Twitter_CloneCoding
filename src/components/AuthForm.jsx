@@ -1,5 +1,8 @@
 import { authService } from "fbase"
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth"
 import React, { useState } from "react"
 
 const AuthForm = () => {
@@ -8,10 +11,10 @@ const AuthForm = () => {
   const [newAccount, setNewAccount] = useState(true)
   const [error, setError] = useState("")
 
-  const handleOnChange = (e) => {
+  const OnChange = (event) => {
     const {
       target: { name, value },
-    } = e
+    } = event
 
     if (name === "email") {
       setEmail(value)
@@ -20,8 +23,8 @@ const AuthForm = () => {
     }
   }
 
-  const handleOnSubmit = async (e) => {
-    e.preventDefault()
+  const OnSubmit = async (event) => {
+    event.preventDefault()
     try {
       let data
       if (newAccount) {
@@ -44,14 +47,15 @@ const AuthForm = () => {
   }
   return (
     <>
-      <form onSubmit={handleOnSubmit}>
+      <form onSubmit={OnSubmit} className="container">
         <input
           name="email"
           type="text"
           placeholder="Email"
           required
           value={email}
-          onChange={handleOnChange}
+          onChange={OnChange}
+          className="authInput"
         />
         <input
           name="password"
@@ -59,12 +63,17 @@ const AuthForm = () => {
           placeholder="Password"
           required
           value={password}
-          onChange={handleOnChange}
+          onChange={OnChange}
+          className="authInput"
         />
-        <input type="submit" value={newAccount ? "Create Account" : "SignIn"} />
-        {error}
+        <input
+          type="submit"
+          className="authInput authSubmit"
+          value={newAccount ? "Create Account" : "SignIn"}
+        />
+        {error && <span className="authError">{error}</span>}
       </form>
-      <span onClick={toggleAccount}>
+      <span onClick={toggleAccount} className="authSwitch">
         {newAccount ? "Sign in" : "Create Account"}
       </span>
     </>

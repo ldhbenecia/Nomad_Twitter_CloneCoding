@@ -9,7 +9,10 @@ const Home = ({ userObj }) => {
 
   useEffect(() => {
     //스냅샷은 리스너(관찰자)로 변화를 감지, 새로운 스냅샷을 받을때 배열을 만들고 lweets state에 넣음
-    const q = query(collection(dbService, "nweets"), orderBy("createdAt", "desc"))
+    const q = query(
+      collection(dbService, "lweets"),
+      orderBy("createdAt", "desc")
+    )
     onSnapshot(q, (snapshot) => {
       const LweetArray = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -20,9 +23,9 @@ const Home = ({ userObj }) => {
   }, [])
 
   return (
-    <div>
+    <div className="container">
       <LweetFactory userObj={userObj} />
-      <div>
+      <div style={{ marginTop: 30 }}>
         {lweets.map((lweet) => (
           <Lweet
             key={lweet.id}
