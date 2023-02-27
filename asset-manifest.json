@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/lwitter/static/css/main.4c08cd25.css",
+    "main.js": "/lwitter/static/js/main.73af3fdb.js",
+    "index.html": "/lwitter/index.html",
+    "main.4c08cd25.css.map": "/lwitter/static/css/main.4c08cd25.css.map",
+    "main.73af3fdb.js.map": "/lwitter/static/js/main.73af3fdb.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4c08cd25.css",
+    "static/js/main.73af3fdb.js"
+  ]
+}
